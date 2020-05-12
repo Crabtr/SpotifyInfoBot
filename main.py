@@ -43,7 +43,7 @@ def main():
         password=config["reddit"]["password"],
         client_id=config["reddit"]["client_id"],
         client_secret=config["reddit"]["client_secret"],
-        user_agent="SpotifyInfoBot (by /u/Golden_Narwhal)",
+        user_agent="SpotifyInfoBot:v1.0 (by /u/Golden_Narwhal)",
     )
 
     logger.info("Successfully authenticated as %s", reddit.user.me())
@@ -187,7 +187,10 @@ def main():
                 time.sleep(1)
 
             # Calculate the length of the playlist
-            total_ms = sum(track["track"]["duration_ms"] for track in playlist["tracks"]["items"])
+            total_ms = 0
+            for track in playlist["tracks"]["items"]:
+                if track["track"]:
+                    total_ms += track["track"]["duration_ms"]
 
             hours = int(total_ms / 3600000)
             minutes = int((total_ms / 60000) % 60)

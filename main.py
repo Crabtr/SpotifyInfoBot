@@ -187,17 +187,18 @@ def main():
                 time.sleep(1)
 
             # Calculate the length of the playlist
-            total_ms = 0
-            for track in playlist["tracks"]["items"]:
-                if track["track"]:
-                    total_ms += track["track"]["duration_ms"]
+            total_ms = sum(
+                track["track"]["duration_ms"] for track in playlist["tracks"]["items"] if track["track"] is not None
+            )
 
             hours = int(total_ms / 3600000)
             minutes = int((total_ms / 60000) % 60)
 
             # Rank the tracks by popularity
             ranked_tracks = sorted(
-                playlist["tracks"]["items"], key=lambda track: track["track"]["popularity"], reverse=True,
+                playlist["tracks"]["items"],
+                key=lambda track: track["track"]["popularity"] if track["track"] is not None else 0,
+                reverse=True,
             )
 
             # Build the response
